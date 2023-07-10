@@ -584,21 +584,35 @@ zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo)
       unsigned int link_counter = 0;
       GIRARA_LIST_FOREACH_BODY(priv->links.list, zathura_link_t*, link,
         if (link != NULL) {
-          zathura_rectangle_t rectangle = recalc_rectangle(priv->page, zathura_link_get_position(link));
+          zathura_rectangle_t link_text_box = recalc_rectangle(priv->page, zathura_link_get_position(link));
+          char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
 
-          /* draw position */
-          const GdkRGBA color = priv->zathura->ui.colors.highlight_color;
-          cairo_set_source_rgba(cairo, color.red, color.green, color.blue, transparency);
-          cairo_rectangle(cairo, rectangle.x1, rectangle.y1,
-                          (rectangle.x2 - rectangle.x1), (rectangle.y2 - rectangle.y1));
+          // text configuration – needs to be here to calculate correct text height & width
+          cairo_select_font_face(cairo, "monospace", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+
+          // gets text size
+          cairo_text_extents_t extents;
+          cairo_text_extents(cairo, link_number, &extents);
+          double text_width = extents.width;
+          double text_height = extents.height;
+
+          // calculates background conrdinates and dimensions
+          float padding = 6;
+          double background_box_width = text_width + padding;
+          double background_box_height = text_height + padding;
+          double background_box_x = link_text_box.x1 + 1;
+          double background_box_y = link_text_box.y2 - background_box_height - 1;
+
+          // draws background box
+          cairo_rectangle(cairo, background_box_x, background_box_y, background_box_width, background_box_height);
+          cairo_set_source_rgb(cairo, 0, 0, 0);
           cairo_fill(cairo);
 
-          /* draw text */
-          const GdkRGBA color_fg = priv->zathura->ui.colors.highlight_color_fg;
-          cairo_set_source_rgba(cairo, color_fg.red, color_fg.green, color_fg.blue, transparency);
-          cairo_move_to(cairo, rectangle.x1 + 1, rectangle.y2 - 1);
-          char* link_number = g_strdup_printf("%i", priv->links.offset + ++link_counter);
+          // draws link number
+          cairo_move_to(cairo, background_box_x + (padding/4), background_box_y + background_box_height - (padding/2));
+          cairo_set_source_rgb(cairo, 1, 1, 1);
           cairo_show_text(cairo, link_number);
+
           g_free(link_number);
         }
       );
