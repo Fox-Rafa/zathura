@@ -188,7 +188,7 @@ main(int argc, char* argv[])
   if (synctex_fwd != NULL) {
     if (argc != 2) {
       girara_error("Too many arguments or missing filename while running with "
-                   "--synctex-forward");
+          "--synctex-forward");
       ret = -1;
       goto free_and_ret;
     }
@@ -241,7 +241,7 @@ main(int argc, char* argv[])
         file_idx = idx;
         if (setsid() == -1) {
           girara_error("Could not start new process group: %s",
-                       strerror(errno));
+              strerror(errno));
           ret = -1;
           goto free_and_ret;
         }
@@ -280,7 +280,7 @@ main(int argc, char* argv[])
 
   /* Create zathura session */
   zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir,
-                                    plugin_path, argv, synctex_editor, embed);
+      plugin_path, argv, synctex_editor, embed);
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
     ret = -1;
@@ -305,7 +305,7 @@ main(int argc, char* argv[])
       --page_number;
     }
     document_open_idle(zathura, argv[file_idx], password, page_number,
-                       mode, synctex_fwd, bookmark_name, search_string);
+        mode, synctex_fwd, bookmark_name, search_string);
   } else if (bookmark_name != NULL) {
     girara_error("Can not use bookmark argument when no file is given");
     ret = -1;
@@ -326,9 +326,9 @@ main(int argc, char* argv[])
   {
     const gchar *id = gtkosx_application_get_bundle_id ();
     if (id != NULL)
-      {
-        g_print ("TestIntegration Error! Bundle Has ID %s\n", id);
-      }
+    {
+      g_print ("TestIntegration Error! Bundle Has ID %s\n", id);
+    }
   }
 #endif //GTKOSXAPPLICATION
   /* run zathura */
